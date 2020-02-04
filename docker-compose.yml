@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress_web
+    restart: always
+    ports:
+      - 8090:80
+    volumes:
+      - wordpress_app:/var/www/html
+      - ./wp-config.php:/var/www/html/wp-config.php
+    networks:
+      - virtual-network
+
+  wordpress_db:
+    image: hypriot/rpi-mysql
+    container_name: wordpress_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_ROOT_PASSWORD: my_root_password
+    volumes:
+      - wordpress_data:/var/lib/mysql
+    networks:
+      - virtual-network
+
+volumes:
+  wordpress_app:
+    external: true
+  wordpress_data:
+    external: true
+
+networks:
+  virtual-network:
+    external:
+      name: virtual-network
